@@ -18,6 +18,10 @@ import android.os.Build;
 import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.uimanager.IllegalViewOperationException;
 
+
+import com.facebook.react.modules.core.DeviceEventManagerModule; //
+
+
 @ReactModule(name = KioskViewModule.NAME)
 public class KioskViewModule extends ReactContextBaseJavaModule {
   public static final String NAME = "KioskView";
@@ -40,6 +44,8 @@ public class KioskViewModule extends ReactContextBaseJavaModule {
         @Override
         public void run() {
           Immersive.fullscreen(getCurrentActivity().getWindow(), getCurrentActivity());
+          int lockTaskModeState = Immersive.getLockTaskModeState(getCurrentActivity().getWindow(), getCurrentActivity());
+          promise.resolve(lockTaskModeState);
         }
       });
     } catch (IllegalViewOperationException e) {
@@ -70,4 +76,28 @@ public class KioskViewModule extends ReactContextBaseJavaModule {
     public void moveToFront() {
       Immersive.moveToFront(getCurrentActivity().getTaskId(), (ActivityManager) getReactApplicationContext().getSystemService(Context.ACTIVITY_SERVICE));
     }
+
+    @ReactMethod
+    public boolean getActive() {
+      return Immersive.getActive();
+    }
+
+    @ReactMethod
+    public void getLockTaskModeState(Promise promise) {
+       try {
+        UiThreadUtil.runOnUiThread(new Runnable() {
+          @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+          @Override
+          public void run() {
+            int lockTaskModeState = Immersive.getLockTaskModeState(getCurrentActivity().getWindow(), getCurrentActivity());
+            promise.resolve(lockTaskModeState);
+          }
+        });
+      } catch (IllegalViewOperationException e) {
+        WritableMap map = Arguments.createMap();
+        map.putBoolean("success", false);
+        promise.reject("error", e);
+      }
+    }
+
 }
