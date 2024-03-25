@@ -9,20 +9,22 @@ const LINKING_ERROR =
 const KioskView = NativeModules.KioskView
   ? NativeModules.KioskView
   : new Proxy(
-      {},
-      {
-        get() {
-          throw new Error(LINKING_ERROR);
-        },
-      }
-    );
+    {},
+    {
+      get() {
+        throw new Error(LINKING_ERROR);
+      },
+    }
+  );
 
 const fullscreen = () => KioskView.fullscreen();
 
 const exitFullscreen = () => KioskView.exitFullscreen();
 
 const moveToFront = () => KioskView.moveToFront();
+const getActive = () => KioskView.getActive();
+const getLockTaskModeState = () => KioskView.getLockTaskModeState();
 
-const Kiosk = { fullscreen, exitFullscreen, moveToFront };
+const Kiosk = { fullscreen, exitFullscreen, moveToFront, getActive, getLockTaskModeState };
 
 export default Kiosk;
