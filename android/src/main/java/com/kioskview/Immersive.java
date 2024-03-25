@@ -8,17 +8,19 @@ import android.view.Window;
 
 import androidx.annotation.RequiresApi;
 
+import android.content.Context;
+
 public class Immersive {
   private static boolean active = false;
-  
+
   public static boolean getActive() {
     return active;
   }
 
   public static void setActive(boolean value) {
-    active = value;
+      active = value;
   }
-  
+
   private static final int UI_FLAG_HIDE_NAV_BAR = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
       | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
       | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
@@ -49,5 +51,11 @@ public class Immersive {
     if (activityManager != null) {
       activityManager.moveTaskToFront(taskId, 0);
     }
+  }
+
+  public static int getLockTaskModeState(Window window, Activity activity) {
+    ActivityManager activityManager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
+    int lockTaskModeState = activityManager.getLockTaskModeState();
+    return lockTaskModeState;
   }
 }
